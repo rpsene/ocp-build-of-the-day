@@ -56,10 +56,12 @@ def find_builds(current_date, structured_data):
     """ Look for today's build and print its information """
     for key in structured_data:
         if current_date in key:
-            print
+            print ("--------------------------------------------------------------------------------------------")
+            print (key + " | " + current_date + " | " + str(key.split("-")[-1:][0]))
             print ("quay.io/openshift-release-dev/ocp-release-nightly:" + key)
             print ("registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:" + key)
             print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
+            print (structured_data[key])
 
 def cleanup(file):
     """ Detele the JSON file """
@@ -71,6 +73,6 @@ def main():
     file_name=get_file_name(today)
     find_builds(today, structure_data(process_file(get_ocp_builds_info(file_name))))
     cleanup(file_name)
-  
+
 if __name__== "__main__":
     main()
