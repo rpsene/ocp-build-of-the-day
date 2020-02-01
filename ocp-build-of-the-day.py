@@ -16,14 +16,15 @@ limitations under the License.
 """
 
 import os
+import sys
 import json
-import urllib
+import datetime
 import collections
-from datetime import date
+import urllib.request
 
 def get_date():
     """ Get todays' date """
-    today=date.today()
+    today=datetime.date.today()
     return today.strftime("%Y-%m-%d")
 
 def get_file_name(current_date):
@@ -32,7 +33,7 @@ def get_file_name(current_date):
 
 def get_ocp_builds_info(file_name):
     """ Download the JSON file with all build information """
-    urllib.urlretrieve("https://openshift-release-ppc64le.svc.ci.openshift.org/graph", filename=file_name)
+    urllib.request.urlretrieve("https://openshift-release-ppc64le.svc.ci.openshift.org/graph", filename=file_name)
     return file_name
 
 def process_file(file_name):
@@ -65,15 +66,44 @@ def find_builds(current_date, structured_data):
             print (structured_data[key])
 
 def cleanup(file):
-    """ Detele the JSON file """
+    """ Delete the JSON file """
     os.remove(file)
 
-def main():
-    """ Do the magic """
-    today = get_date()
-    file_name=get_file_name(today)
-    find_builds(today, structure_data(process_file(get_ocp_builds_info(file_name))))
+def validate_date(date):
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+        return True
+    except ValueError:
+        raise ValueError("ERROR: date format should be YYYY-MM-DD")
+
+def run(date):
+    """ Run the search for builds """
+    file_name=get_file_name(date)
+    find_builds(date, structure_data(process_file(get_ocp_builds_info(file_name))))
     cleanup(file_name)
 
+def help():
+    """ Help """
+    print
+    print ("You can use one of the following options:")
+    print ("    python3 ./ocp-build-of-the-day.py")
+    print ("    python3 ./ocp-build-of-the-day.py YYYY-MM-DD")
+    print
+
+def main(argv):
+    """ Do the magic """
+    if len(argv) == 0:
+        today = get_date()
+        run(today)
+    elif len(argv) == 1:
+        input = argv[0]
+        if "-h" in input or "--help" in input:
+            help()
+        elif validate_date(input):
+            today = input
+            run(today)
+    else:
+        help()
+
 if __name__== "__main__":
-    main()
+    main(sys.argv[1:])
