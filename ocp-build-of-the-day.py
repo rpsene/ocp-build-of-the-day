@@ -61,6 +61,7 @@ def find_builds(current_date, structured_data):
             print ("quay.io/openshift-release-dev/ocp-release-nightly:" + key)
             print ("registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:" + key)
             print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
+            print ("oc adm release extract --tools registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:"+key)
             print (structured_data[key])
 
 def cleanup(file):
