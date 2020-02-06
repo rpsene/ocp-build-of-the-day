@@ -57,9 +57,10 @@ def find_builds(current_date, structured_data):
     """ Look for today's build and print its information """
     print ("--------------------------------------------------------------------------------------------")
     print ("Summary")
+    # This source can be improved, 1 loop is enough for everything.
     for key in structured_data:
         if current_date in key:    
-            print ("quay.io/openshift-release-dev/ocp-release-nightly:" + key)
+            print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
     for key in structured_data:
         if current_date in key:
             print ("--------------------------------------------------------------------------------------------")
