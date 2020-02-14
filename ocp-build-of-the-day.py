@@ -27,9 +27,9 @@ def get_date():
     today=datetime.date.today()
     return today.strftime("%Y-%m-%d")
 
-def get_file_name(current_date):
+def get_file_name(x):
     """ Create a file name with today's date" """
-    return "./graph-"+current_date
+    return "./graph-"+x
 
 def get_ocp_builds_info(file_name):
     """ Download the JSON file with all build information """
@@ -53,18 +53,18 @@ def structure_data(raw_data):
     od = collections.OrderedDict(sorted(builds.items()))
     return od
 
-def find_builds(current_date, structured_data):
+def find_builds(x, structured_data):
     """ Look for today's build and print its information """
     print ("--------------------------------------------------------------------------------------------")
     print ("Summary")
     # This source can be improved, 1 loop is enough for everything.
     for key in structured_data:
-        if current_date in key:    
+        if x in key:    
             print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
     for key in structured_data:
-        if current_date in key:
+        if x in key:
             print ("--------------------------------------------------------------------------------------------")
-            print (key + " | " + current_date + " | " + str(key.split("-")[-1:][0]))
+            print (key + " | " + x + " | " + str(key.split("-")[-1:][0]))
             print ("quay.io/openshift-release-dev/ocp-release-nightly:" + key)
             print ("registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:" + key)
             print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
@@ -83,11 +83,18 @@ def validate_date(date):
         return True
     except ValueError:
         raise ValueError("ERROR: date format should be YYYY-MM-DD")
+        
+def validate_version(version):
+    version_list = ["4.3.0","4.4.0"]
+    if version in version_list:
+        return True
+    else:
+        print ("Invalid Version")
 
-def run(date):
+def run(x):
     """ Run the search for builds """
-    file_name=get_file_name(date)
-    find_builds(date, structure_data(process_file(get_ocp_builds_info(file_name))))
+    file_name=get_file_name(x)
+    find_builds(x, structure_data(process_file(get_ocp_builds_info(file_name))))
     cleanup(file_name)
 
 def help():
@@ -96,6 +103,7 @@ def help():
     print ("You can use one of the following options:")
     print ("    python3 ./ocp-build-of-the-day.py")
     print ("    python3 ./ocp-build-of-the-day.py YYYY-MM-DD")
+    print ("    python3 ./ocp-build-of-the-day.py -v VERSION")
     print
 
 def main(argv):
@@ -110,6 +118,12 @@ def main(argv):
         elif validate_date(input):
             today = input
             run(today)
+    elif len(argv) == 2:
+        input = argv[0]
+        if "-v" in input or "--version" in input:
+            version = argv[1]
+            validate_version(version)
+            run(version)
     else:
         help()
 
