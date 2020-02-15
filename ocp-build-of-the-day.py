@@ -60,17 +60,18 @@ def find_builds(x, structured_data):
     # This source can be improved, 1 loop is enough for everything.
     for key in structured_data:
         if x in key:    
-            print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
+            print ("quay.io/openshift-release-dev/ocp-release-nightly:" + key)
     for key in structured_data:
         if x in key:
             print ("--------------------------------------------------------------------------------------------")
             print (key + " | " + x + " | " + str(key.split("-")[-1:][0]))
             print ("quay.io/openshift-release-dev/ocp-release-nightly:" + key)
             print ("registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:" + key)
+            print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/dependencies/rhcos/pre-release/" + key)
             print ("https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key)
-            print ("oc adm release extract --tools registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:"+key)
             print ("wget https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key + "/openshift-install-linux-" + key + ".tar.gz")
             print ("wget https://mirror.openshift.com/pub/openshift-v4/ppc64le/clients/ocp-dev-preview/" + key + "/openshift-client-linux-" + key + ".tar.gz")
+            print ("oc adm release extract --tools registry.svc.ci.openshift.org/ocp-ppc64le/release-ppc64le:" + key)
             print (structured_data[key])
 
 def cleanup(file):
