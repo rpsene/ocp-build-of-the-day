@@ -86,7 +86,7 @@ def validate_date(date):
         raise ValueError("ERROR: date format should be YYYY-MM-DD")
         
 def validate_version(version):
-    version_list = ["4.3.0","4.4.0"]
+    version_list = ["4.3.0","4.4.0","4.5.0"]
     if version in version_list:
         return True
     else:
